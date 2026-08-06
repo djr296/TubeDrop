@@ -5,22 +5,19 @@ TubeDrop depends on the following open-source projects. Their licenses remain ap
 | Component | Purpose | License |
 | --- | --- | --- |
 | [yt-dlp](https://github.com/yt-dlp/yt-dlp) | Media extraction and download engine | The Unlicense |
-| [imageio-ffmpeg](https://github.com/imageio/imageio-ffmpeg) | FFmpeg binary discovery and packaging | BSD 2-Clause |
 | [CustomTkinter](https://github.com/TomSchimansky/CustomTkinter) | Desktop interface toolkit | CC0 1.0 Universal |
 | [Pillow](https://python-pillow.github.io/) | Seasonal background loading and resizing | MIT-CMU |
 | [PyInstaller](https://pyinstaller.org/) | Windows executable packaging (development dependency) | GPL-2.0-or-later with a special exception for distributing bundled applications |
 
 ## FFmpeg distribution
 
-The Windows executable produced by `build.ps1` includes the FFmpeg executable supplied by `imageio-ffmpeg`. The currently resolved Windows binary reports that it was built with `--enable-gpl --enable-version3`, so that FFmpeg binary is covered by the GNU General Public License version 3 or later.
+The Windows executable produced by `build.ps1` does **not** contain FFmpeg. TubeDrop locates and invokes a separately installed `ffmpeg` executable as a subprocess. Users can install the Gyan FFmpeg Essentials package with Windows Package Manager as described in the README.
 
-Anyone distributing a built `TubeDrop.exe` must satisfy the corresponding FFmpeg license obligations, including providing the applicable license text and complete corresponding source (or another method permitted by that license). Consult the exact FFmpeg binary's `-version` output and distribution source when preparing a release because the resolved binary may change between dependency versions.
+FFmpeg is separate software distributed under its own license. Gyan's current static Windows builds are GPLv3. Users and downstream distributors should consult the license that accompanies the exact FFmpeg package they install or redistribute.
 
 - FFmpeg license and legal information: <https://ffmpeg.org/legal.html>
 - FFmpeg source: <https://ffmpeg.org/download.html#get-sources>
-- ImageIO-FFmpeg licensing notes: <https://github.com/imageio/imageio-ffmpeg#license>
-
-TubeDrop invokes FFmpeg as a separate executable. No claim of ownership is made over FFmpeg or any other third-party component.
+TubeDrop invokes FFmpeg as a separate executable. No claim of ownership is made over FFmpeg or any other third-party component, and TubeDrop does not redistribute it.
 
 ## Seasonal artwork
 

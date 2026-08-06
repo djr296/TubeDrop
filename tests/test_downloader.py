@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from downloader import build_options, is_youtube_url
+from downloader import build_options, find_ffmpeg, is_youtube_url
 
 
 @pytest.mark.parametrize("url", [
@@ -33,3 +33,9 @@ def test_mp4_options_cap_resolution(tmp_path: Path) -> None:
     options = build_options("mp4", tmp_path, lambda _: None, lambda _: None)
     assert "height<=1080" in options["format"]
     assert options["merge_output_format"] == "mp4"
+
+
+def test_find_ffmpeg_reports_install_command(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr("downloader.shutil.which", lambda _: None)
+    with pytest.raises(RuntimeError, match="winget install"):
+        find_ffmpeg()

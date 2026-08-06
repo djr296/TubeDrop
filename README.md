@@ -15,7 +15,13 @@ python -m pip install -r requirements.txt
 python app.py
 ```
 
-The packaged FFmpeg component is located automatically; the user does not need to install FFmpeg separately.
+FFmpeg is required for MP3 conversion and high-quality video/audio merging. Install it once from Windows Terminal:
+
+```powershell
+winget install --id Gyan.FFmpeg.Essentials --exact
+```
+
+TubeDrop locates the installed `ffmpeg` executable automatically.
 
 ## Build the Windows executable
 
@@ -25,7 +31,7 @@ The packaged FFmpeg component is located automatically; the user does not need t
 
 The standalone app is written to `dist\TubeDrop.exe`. The first build can take several minutes while dependencies are installed.
 
-The executable is intentionally not committed to this repository. If you distribute a packaged build, include the applicable third-party license information described in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md), particularly the GPL requirements of the bundled FFmpeg build.
+The executable is intentionally not committed to this repository. Release packages should include the project license and [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
 ## Notes
 

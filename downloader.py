@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
+import shutil
 from typing import Callable, Literal
 from urllib.parse import parse_qs, urlparse
 
@@ -18,6 +19,17 @@ class Progress:
     percent: float | None
     status: str
     detail: str = ""
+
+
+def find_ffmpeg() -> str:
+    ffmpeg = shutil.which("ffmpeg")
+    if ffmpeg:
+        return ffmpeg
+    raise RuntimeError(
+        "FFmpeg is required for MP3 conversion and 1080p video merging. "
+        "Install it from Windows Terminal with:\n\n"
+        "winget install --id Gyan.FFmpeg.Essentials --exact"
+    )
 
 
 def is_youtube_url(value: str) -> bool:
@@ -99,12 +111,11 @@ def download(
     output_dir.mkdir(parents=True, exist_ok=True)
 
     try:
-        import imageio_ffmpeg
         from yt_dlp import YoutubeDL
     except ImportError as exc:
         raise RuntimeError("Required download components are not installed.") from exc
 
-    ffmpeg_path = imageio_ffmpeg.get_ffmpeg_exe()
+    ffmpeg_path = find_ffmpeg()
 
     def check_cancel() -> None:
         if should_cancel():

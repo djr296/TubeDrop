@@ -8,7 +8,6 @@ python -m PyInstaller --noconfirm --clean --onefile --windowed `
     --add-data "assets;assets" `
     --collect-all customtkinter `
     --collect-all yt_dlp `
-    --collect-all imageio_ffmpeg `
     app.py
 
 Write-Host "Built: $ProjectRoot\dist\TubeDrop.exe"
