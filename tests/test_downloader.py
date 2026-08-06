@@ -1,0 +1,35 @@
+from pathlib import Path
+
+import pytest
+
+from downloader import build_options, is_youtube_url
+
+
+@pytest.mark.parametrize("url", [
+    "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    "https://youtu.be/dQw4w9WgXcQ",
+    "https://youtube.com/shorts/abc123",
+    "https://m.youtube.com/live/abc123",
+])
+def test_accepts_video_urls(url: str) -> None:
+    assert is_youtube_url(url)
+
+
+@pytest.mark.parametrize("url", [
+    "", "youtube.com", "https://example.com/watch?v=abc",
+    "https://youtube.com/playlist?list=abc", "javascript:alert(1)",
+])
+def test_rejects_invalid_or_non_video_urls(url: str) -> None:
+    assert not is_youtube_url(url)
+
+
+def test_mp3_options_extract_audio(tmp_path: Path) -> None:
+    options = build_options("mp3", tmp_path, lambda _: None, lambda _: None)
+    assert options["noplaylist"] is True
+    assert options["postprocessors"][0]["preferredcodec"] == "mp3"
+
+
+def test_mp4_options_cap_resolution(tmp_path: Path) -> None:
+    options = build_options("mp4", tmp_path, lambda _: None, lambda _: None)
+    assert "height<=1080" in options["format"]
+    assert options["merge_output_format"] == "mp4"
