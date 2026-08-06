@@ -25,9 +25,17 @@ The packaged FFmpeg component is located automatically; the user does not need t
 
 The standalone app is written to `dist\TubeDrop.exe`. The first build can take several minutes while dependencies are installed.
 
+The executable is intentionally not committed to this repository. If you distribute a packaged build, include the applicable third-party license information described in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md), particularly the GPL requirements of the bundled FFmpeg build.
+
 ## Notes
 
 - MP4 means the best available video no higher than 1080p, merged with the best available audio.
 - MP3 uses the best available audio source and high-quality variable-bitrate conversion.
 - Playlist URLs are intentionally rejected and playlist expansion is disabled.
 - Some restricted, private, paid, or age-gated videos may not be downloadable without account cookies; this app does not collect browser credentials.
+
+## Legal and licensing
+
+TubeDrop is an independent project and is not affiliated with or endorsed by YouTube or Google. Users are responsible for complying with applicable laws, copyright permissions, and platform terms.
+
+The TubeDrop source code is available under the [MIT License](LICENSE). Third-party packages and generated seasonal artwork are documented in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
