@@ -23,6 +23,8 @@ winget install --id Gyan.FFmpeg.Essentials --exact
 
 TubeDrop locates the installed `ffmpeg` executable automatically.
 
+YouTube changes its playback systems regularly. If downloads begin failing across multiple public videos, install the newest dependencies and rebuild TubeDrop; releases pin a minimum yt-dlp version known to work at build time.
+
 ## Build the Windows executable
 
 ```powershell
