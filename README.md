@@ -21,9 +21,9 @@ FFmpeg is required for MP3 conversion and high-quality video/audio merging. Inst
 winget install --id Gyan.FFmpeg.Essentials --exact
 ```
 
-TubeDrop locates the installed `ffmpeg` executable automatically.
+TubeDrop locates the installed `ffmpeg` executable automatically. Its Windows package includes the Deno JavaScript runtime and yt-dlp EJS challenge scripts required by current YouTube playback.
 
-YouTube changes its playback systems regularly. If downloads begin failing across multiple public videos, install the newest dependencies and rebuild TubeDrop; releases pin a minimum yt-dlp version known to work at build time.
+YouTube changes its playback systems regularly. TubeDrop uses yt-dlp's recommended nightly channel and allows its signed EJS challenge scripts to refresh from the official yt-dlp GitHub project, reducing the need for a full app rebuild when YouTube changes those scripts.
 
 ## Build the Windows executable
 

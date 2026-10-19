@@ -1,9 +1,11 @@
 # TubeDrop for Windows
 
-## v1.0.1
+## v1.0.2
 
-- Fixed YouTube downloads failing with `HTTP Error 403: Forbidden` after YouTube's August 2026 playback changes.
-- Updated the bundled yt-dlp engine to version 2026.08.19.
+- Fixed recurring YouTube downloads failing with `HTTP Error 403: Forbidden` after YouTube's October 2026 playback changes.
+- Updated the bundled yt-dlp engine to nightly version 2026.10.10.233141.
+- Bundled Deno and yt-dlp's EJS challenge solver, which current YouTube playback requires.
+- Enabled official EJS script refreshes from yt-dlp's GitHub project for better resilience to future script-only changes.
 
 ## Install
 
@@ -28,6 +30,7 @@ Paste a YouTube video link, choose MP3 audio or MP4 video up to 1080p, select a 
 - `TubeDrop.exe` — the Windows application
 - `LICENSE` — TubeDrop's MIT license
 - `THIRD_PARTY_NOTICES.md` — dependency, FFmpeg, and artwork notices
+- `LICENSE-DENO.md` — license for the bundled Deno runtime
 - `README.md` — project documentation
 
 FFmpeg is not included in the release ZIP and remains separately installed software under its own license.

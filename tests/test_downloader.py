@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from downloader import build_options, find_ffmpeg, is_youtube_url
+from downloader import build_options, find_ffmpeg, find_javascript_runtime, is_youtube_url
 
 
 @pytest.mark.parametrize("url", [
@@ -30,12 +30,21 @@ def test_mp3_options_extract_audio(tmp_path: Path) -> None:
 
 
 def test_mp4_options_cap_resolution(tmp_path: Path) -> None:
-    options = build_options("mp4", tmp_path, lambda _: None, lambda _: None)
+    options = build_options("mp4", tmp_path, lambda _: None, lambda _: None, javascript_runtime="deno.exe")
     assert "height<=1080" in options["format"]
     assert options["merge_output_format"] == "mp4"
+    assert options["js_runtimes"] == {"deno": {"path": "deno.exe"}}
+    assert options["remote_components"] == {"ejs:github"}
 
 
 def test_find_ffmpeg_reports_install_command(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr("downloader.shutil.which", lambda _: None)
     with pytest.raises(RuntimeError, match="winget install"):
         find_ffmpeg()
+
+
+def test_find_javascript_runtime_reports_reinstall(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr("downloader.resource_path", lambda *_: Path("missing-deno.exe"))
+    monkeypatch.setattr("downloader.shutil.which", lambda _: None)
+    with pytest.raises(RuntimeError, match="Reinstall"):
+        find_javascript_runtime()

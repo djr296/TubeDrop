@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 import shutil
+import sys
 from typing import Callable, Literal
 from urllib.parse import parse_qs, urlparse
 
@@ -19,6 +20,23 @@ class Progress:
     percent: float | None
     status: str
     detail: str = ""
+
+
+def resource_path(*parts: str) -> Path:
+    root = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parent))
+    return root.joinpath(*parts)
+
+
+def find_javascript_runtime() -> str:
+    bundled = resource_path("tools", "deno", "deno.exe")
+    if bundled.is_file():
+        return str(bundled)
+    deno = shutil.which("deno")
+    if deno:
+        return deno
+    raise RuntimeError(
+        "TubeDrop's JavaScript runtime is missing. Reinstall the latest TubeDrop release."
+    )
 
 
 def find_ffmpeg() -> str:
@@ -56,6 +74,7 @@ def build_options(
     progress_hook: Callable[[dict], None],
     postprocessor_hook: Callable[[dict], None],
     ffmpeg_location: str | None = None,
+    javascript_runtime: str | None = None,
 ) -> dict:
     options: dict = {
         "outtmpl": str(output_dir / "%(title).180B [%(id)s].%(ext)s"),
@@ -66,9 +85,14 @@ def build_options(
         "quiet": True,
         "no_warnings": True,
         "overwrites": False,
+        # Permit yt-dlp to refresh its signed EJS challenge scripts when YouTube
+        # changes them, avoiding a full TubeDrop rebuild for script-only updates.
+        "remote_components": {"ejs:github"},
     }
     if ffmpeg_location:
         options["ffmpeg_location"] = ffmpeg_location
+    if javascript_runtime:
+        options["js_runtimes"] = {"deno": {"path": javascript_runtime}}
 
     if kind == "mp3":
         options.update(
@@ -116,6 +140,7 @@ def download(
         raise RuntimeError("Required download components are not installed.") from exc
 
     ffmpeg_path = find_ffmpeg()
+    javascript_runtime = find_javascript_runtime()
 
     def check_cancel() -> None:
         if should_cancel():
@@ -140,7 +165,14 @@ def download(
         if data.get("status") == "started":
             on_progress(Progress(None, "Converting audio…" if kind == "mp3" else "Merging video…"))
 
-    options = build_options(kind, output_dir, progress_hook, postprocessor_hook, ffmpeg_path)
+    options = build_options(
+        kind,
+        output_dir,
+        progress_hook,
+        postprocessor_hook,
+        ffmpeg_path,
+        javascript_runtime,
+    )
     on_progress(Progress(0, "Reading video information…"))
     with YoutubeDL(options) as ydl:
         result = ydl.download([url.strip()])

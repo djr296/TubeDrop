@@ -8,6 +8,10 @@ TubeDrop depends on the following open-source projects. Their licenses remain ap
 | [CustomTkinter](https://github.com/TomSchimansky/CustomTkinter) | Desktop interface toolkit | CC0 1.0 Universal |
 | [Pillow](https://python-pillow.github.io/) | Seasonal background loading and resizing | MIT-CMU |
 | [PyInstaller](https://pyinstaller.org/) | Windows executable packaging (development dependency) | GPL-2.0-or-later with a special exception for distributing bundled applications |
+| [Deno](https://deno.com/) | Sandboxed JavaScript runtime for YouTube challenge solving | MIT |
+| [yt-dlp-ejs](https://github.com/yt-dlp/ejs) | YouTube JavaScript challenge solver scripts | Unlicense |
+
+The Windows release bundles Deno 2.9.7. Its license is included beside the bundled executable and remains applicable to Deno.
 
 ## FFmpeg distribution
 
