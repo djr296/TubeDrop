@@ -24,9 +24,10 @@ def test_rejects_invalid_or_non_video_urls(url: str) -> None:
 
 
 def test_mp3_options_extract_audio(tmp_path: Path) -> None:
-    options = build_options("mp3", tmp_path, lambda _: None, lambda _: None)
+    options = build_options("mp3", tmp_path, lambda _: None, lambda _: None, cookie_browser="chrome")
     assert options["noplaylist"] is True
     assert options["postprocessors"][0]["preferredcodec"] == "mp3"
+    assert options["cookiesfrombrowser"] == ("chrome",)
 
 
 def test_mp4_options_cap_resolution(tmp_path: Path) -> None:

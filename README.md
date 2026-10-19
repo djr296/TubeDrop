@@ -40,7 +40,9 @@ The executable is intentionally not committed to this repository. Release packag
 - MP4 means the best available video no higher than 1080p, merged with the best available audio.
 - MP3 uses the best available audio source and high-quality variable-bitrate conversion.
 - Playlist URLs are intentionally rejected and playlist expansion is disabled.
-- Some restricted, private, paid, or age-gated videos may not be downloadable without account cookies; this app does not collect browser credentials.
+- If YouTube asks you to sign in to confirm you are not a bot, choose Chrome or Edge under **YouTube sign-in**. TubeDrop asks yt-dlp to read that browser's local YouTube session; it does not copy, upload, or store your cookies.
+- Sign in to YouTube in the selected browser first. Closing the browser before downloading can help if its cookie database is locked.
+- Private, paid, age-gated, or otherwise restricted videos still require an account that is allowed to view them.
 
 ## Legal and licensing
 

@@ -9,6 +9,7 @@ from urllib.parse import parse_qs, urlparse
 
 
 DownloadKind = Literal["mp3", "mp4"]
+CookieBrowser = Literal["chrome", "edge"]
 
 
 class DownloadCancelled(Exception):
@@ -75,6 +76,7 @@ def build_options(
     postprocessor_hook: Callable[[dict], None],
     ffmpeg_location: str | None = None,
     javascript_runtime: str | None = None,
+    cookie_browser: CookieBrowser | None = None,
 ) -> dict:
     options: dict = {
         "outtmpl": str(output_dir / "%(title).180B [%(id)s].%(ext)s"),
@@ -93,6 +95,10 @@ def build_options(
         options["ffmpeg_location"] = ffmpeg_location
     if javascript_runtime:
         options["js_runtimes"] = {"deno": {"path": javascript_runtime}}
+    if cookie_browser:
+        # yt-dlp reads the selected browser's local cookie database directly.
+        # TubeDrop never copies, uploads, or stores the cookies itself.
+        options["cookiesfrombrowser"] = (cookie_browser,)
 
     if kind == "mp3":
         options.update(
@@ -129,6 +135,7 @@ def download(
     output_dir: Path,
     on_progress: Callable[[Progress], None],
     should_cancel: Callable[[], bool],
+    cookie_browser: CookieBrowser | None = None,
 ) -> None:
     if not is_youtube_url(url):
         raise ValueError("Enter a valid YouTube video, Short, or live-video URL.")
@@ -172,6 +179,7 @@ def download(
         postprocessor_hook,
         ffmpeg_path,
         javascript_runtime,
+        cookie_browser,
     )
     on_progress(Progress(0, "Reading video information…"))
     with YoutubeDL(options) as ydl:

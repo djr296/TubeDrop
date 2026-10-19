@@ -1,6 +1,12 @@
 # TubeDrop for Windows
 
-## v1.0.2
+## v1.0.3
+
+- Added an optional **YouTube sign-in** selector for Chrome and Edge.
+- Fixes YouTube's “Sign in to confirm you're not a bot” response by using the selected browser's existing local session.
+- Browser cookies remain on the user's computer and are never stored or uploaded by TubeDrop.
+
+### Previous v1.0.2 fixes
 
 - Fixed recurring YouTube downloads failing with `HTTP Error 403: Forbidden` after YouTube's October 2026 playback changes.
 - Updated the bundled yt-dlp engine to nightly version 2026.10.10.233141.

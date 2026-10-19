@@ -49,7 +49,7 @@ class TubeDrop(ctk.CTk):
         ctk.set_appearance_mode("dark")
         self.title(APP_NAME)
         self.geometry("920x680")
-        self.minsize(760, 610)
+        self.minsize(760, 680)
         self._events: queue.Queue[tuple[str, object]] = queue.Queue()
         self._cancel = threading.Event()
         self._worker: threading.Thread | None = None
@@ -63,6 +63,7 @@ class TubeDrop(ctk.CTk):
         self.status_var = ctk.StringVar(value="Ready when you are")
         self.detail_var = ctk.StringVar(value="Paste a YouTube link to get started")
         self.season_var = ctk.StringVar(value="☀  Summer")
+        self.browser_var = ctk.StringVar(value="Not signed in")
 
         self._build_ui()
         self._apply_season("Summer")
@@ -92,7 +93,7 @@ class TubeDrop(ctk.CTk):
         )
         self.season_menu.pack(side="right")
 
-        self.card = ctk.CTkFrame(self, width=610, height=530, corner_radius=30, border_width=1)
+        self.card = ctk.CTkFrame(self, width=610, height=590, corner_radius=30, border_width=1)
         self.card.place(relx=0.5, rely=0.55, anchor="center")
         self.card.pack_propagate(False)
 
@@ -131,8 +132,21 @@ class TubeDrop(ctk.CTk):
         self.browse_button = ctk.CTkButton(folder_row, text="Browse", command=self._choose_folder, width=88, height=44, corner_radius=14, font=ctk.CTkFont("Segoe UI", 12, "bold"))
         self.browse_button.pack(side="left", padx=(9, 0))
 
+        self.browser_label = self._field_label(content, "YOUTUBE SIGN-IN (OPTIONAL)")
+        self.browser_label.pack(fill="x", pady=(17, 7))
+        self.browser_menu = ctk.CTkOptionMenu(
+            content,
+            variable=self.browser_var,
+            values=["Not signed in", "Chrome", "Edge"],
+            height=42,
+            corner_radius=14,
+            font=ctk.CTkFont("Segoe UI", 12),
+            dropdown_font=ctk.CTkFont("Segoe UI", 12),
+        )
+        self.browser_menu.pack(fill="x")
+
         self.progress = ctk.CTkProgressBar(content, height=8, corner_radius=4)
-        self.progress.pack(fill="x", pady=(24, 0))
+        self.progress.pack(fill="x", pady=(20, 0))
         self.progress.set(0)
         status_row = ctk.CTkFrame(content, fg_color="transparent")
         status_row.pack(fill="x", pady=(8, 19))
@@ -158,7 +172,7 @@ class TubeDrop(ctk.CTk):
         self.card.configure(fg_color=season.card, border_color=season.border)
         self.season_menu.configure(fg_color=season.card, button_color=season.accent, button_hover_color=season.accent_hover, dropdown_fg_color=season.card, dropdown_hover_color=season.panel)
         self.subtitle.configure(text_color=season.muted)
-        for label in (self.link_label, self.format_label, self.folder_label, self.detail_label):
+        for label in (self.link_label, self.format_label, self.folder_label, self.browser_label, self.detail_label):
             label.configure(text_color=season.muted)
         for entry in (self.url_entry, self.folder_entry):
             entry.configure(fg_color=season.panel, border_color=season.border)
@@ -170,6 +184,13 @@ class TubeDrop(ctk.CTk):
             selected_hover_color=season.accent_hover,
         )
         self.browse_button.configure(fg_color=season.panel, hover_color=season.border, border_width=1, border_color=season.border)
+        self.browser_menu.configure(
+            fg_color=season.panel,
+            button_color=season.border,
+            button_hover_color=season.accent_hover,
+            dropdown_fg_color=season.card,
+            dropdown_hover_color=season.panel,
+        )
         self.progress.configure(progress_color=season.accent, fg_color=season.panel)
         self.action.configure(fg_color=season.accent, hover_color=season.accent_hover)
         self._resize_background()
@@ -215,12 +236,24 @@ class TubeDrop(ctk.CTk):
             return
         self._cancel.clear()
         self._set_busy(True)
-        self._worker = threading.Thread(target=self._run_download, args=(url, self.kind_var.get(), folder), daemon=True)
+        browser = self.browser_var.get().lower() if self.browser_var.get() != "Not signed in" else None
+        self._worker = threading.Thread(
+            target=self._run_download,
+            args=(url, self.kind_var.get(), folder, browser),
+            daemon=True,
+        )
         self._worker.start()
 
-    def _run_download(self, url: str, kind: str, folder: Path) -> None:
+    def _run_download(self, url: str, kind: str, folder: Path, browser: str | None) -> None:
         try:
-            download(url, kind, folder, lambda p: self._events.put(("progress", p)), self._cancel.is_set)  # type: ignore[arg-type]
+            download(
+                url,
+                kind,  # type: ignore[arg-type]
+                folder,
+                lambda p: self._events.put(("progress", p)),
+                self._cancel.is_set,
+                browser,  # type: ignore[arg-type]
+            )
             self._events.put(("success", folder))
         except DownloadCancelled:
             self._events.put(("cancelled", None))
@@ -269,6 +302,7 @@ class TubeDrop(ctk.CTk):
         self.folder_entry.configure(state=state)
         self.format_switch.configure(state=state)
         self.browse_button.configure(state=state)
+        self.browser_menu.configure(state=state)
         self.season_menu.configure(state=state)
         self.action.configure(state="normal", text="Cancel download" if busy else "Download now  ↓")
         if not busy:
