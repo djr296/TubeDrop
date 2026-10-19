@@ -1,6 +1,11 @@
 # TubeDrop for Windows
 
-## v1.0.3
+## v1.0.4
+
+- Added Firefox sign-in support as the recommended solution when Chrome or Edge blocks cookie access on Windows.
+- Clarified that yt-dlp's “Chrome cookie database” message can also refer to Edge because both are Chromium-based.
+
+### Previous v1.0.3 fixes
 
 - Added an optional **YouTube sign-in** selector for Chrome and Edge.
 - Fixes YouTube's “Sign in to confirm you're not a bot” response by using the selected browser's existing local session.

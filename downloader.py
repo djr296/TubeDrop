@@ -9,7 +9,7 @@ from urllib.parse import parse_qs, urlparse
 
 
 DownloadKind = Literal["mp3", "mp4"]
-CookieBrowser = Literal["chrome", "edge"]
+CookieBrowser = Literal["chrome", "edge", "firefox"]
 
 
 class DownloadCancelled(Exception):

@@ -137,7 +137,7 @@ class TubeDrop(ctk.CTk):
         self.browser_menu = ctk.CTkOptionMenu(
             content,
             variable=self.browser_var,
-            values=["Not signed in", "Chrome", "Edge"],
+            values=["Not signed in", "Chrome", "Edge", "Firefox"],
             height=42,
             corner_radius=14,
             font=ctk.CTkFont("Segoe UI", 12),

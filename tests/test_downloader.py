@@ -30,6 +30,11 @@ def test_mp3_options_extract_audio(tmp_path: Path) -> None:
     assert options["cookiesfrombrowser"] == ("chrome",)
 
 
+def test_firefox_sign_in_options(tmp_path: Path) -> None:
+    options = build_options("mp3", tmp_path, lambda _: None, lambda _: None, cookie_browser="firefox")
+    assert options["cookiesfrombrowser"] == ("firefox",)
+
+
 def test_mp4_options_cap_resolution(tmp_path: Path) -> None:
     options = build_options("mp4", tmp_path, lambda _: None, lambda _: None, javascript_runtime="deno.exe")
     assert "height<=1080" in options["format"]
